@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Main Page</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<!-- Script to load and render the external template -->
+<script>
+  // Function to fetch and render the template
+  function loadTemplate() {
+    // Fetch the external template file
+    fetch('emote_template.html')
+            .then(response => {
+              if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+              }
+              return response.text();
+            })
+            .then(html => {
+              // Create a temporary element to hold the template content
+              const temp = document.createElement('div');
+              temp.innerHTML = html.trim();
+
+              // Get the template content
+              const templateElement = temp.querySelector('#emoteTemplate');
+
+              // Clone the template content and insert into the document
+              const clone = document.importNode(templateElement.content, true);
+              document.body.appendChild(clone);
+            })
+            .catch(error => {
+              console.error('Error loading template:', error);
+            });
+  }
+
+  // Call the function to load and render the template after the document is fully loaded
+  document.addEventListener('DOMContentLoaded', loadTemplate);
+</script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+[package]
+name = "VTubeRemote"
+version = "0.1.0"
+edition = "2021"
+authors = ["Xzera <mathieu_durand@icloud.com>"]
+license = "MIT"
+
+
+[dependencies]
+rocket = { version = "0.5.0", features = ["json"] }
+vtubestudio = "0.8.0"
+tokio = "1.37.0"
+
+slog = "2.7.0"
+slog-syslog = "0.13.0"
+rocket-slogger = "0.2.0"

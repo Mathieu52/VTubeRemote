@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VTubeRemote</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="/list_arrow_script.js" charset="utf-8" defer></script>
+    <script src="/animation_script.js" charset="utf-8" defer></script>
+    <script src="/style_script.js" charset="utf-8" defer></script>
+    <script src="/script.js" charset="utf-8" type="module" defer></script>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        #status {
+            text-align: center;
+
+            font-size: 4em;
+            font-weight: bolder;
+            font-family: "DIN Alternate", serif;
+            color: #fff;
+
+            -webkit-backdrop-filter: blur(5px);
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 10;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            position: fixed;
+
+            display: grid;
+            align-items: center;
+        }
+
+        #status.pending::before {
+            content: "Pending...";
+        }
+
+        #status.connected::before {
+            content: "";
+        }
+
+        #status.connected {
+            visibility: hidden;
+        }
+
+        #status.reconnecting::before {
+            content: "Disconnected...";
+        }
+    </style>
+</head>
+<body>
+    <div class="topnav">
+        <button id="edit_button" class="icon_button no_manipulation not_editing animated_click_darken_only">
+            <img src="resources/icon/edit_icon.svg" alt="">
+        </button>
+    </div>
+
+    <div id="status" class="pending"></div>
+
+    <div id="emotes-row" class="row-eq-width not_editing arrowed-list">
+    </div>
+</body>
+</html>
