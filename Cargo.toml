@@ -1,7 +1,7 @@
 [package]
 name = "VTubeRemote"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 authors = ["Xzera <mathieu_durand@icloud.com>"]
 license = "MIT"
 
