@@ -32,7 +32,6 @@ async fn requests(streams: &State<VTubeStreams>, request: Json<ClientRequest>) {
 
 #[get("/events")]
 async fn events(state: &State<VTubeState>, streams: &State<VTubeStreams>) -> EventStream![] {
-//async fn events(queue: &State<Arc<RwLock<Sender<Change<(Hotkey, Option<HotkeyState>)>>>>>, hotkey_states: &State<Arc<RwLock<Vec<(Hotkey, Option<HotkeyState>)>>>>) -> EventStream![] {
     let mut rx = streams.events.read().unwrap().subscribe();
     // Collect initial hotkey states into owned data
     let initial_events = {
