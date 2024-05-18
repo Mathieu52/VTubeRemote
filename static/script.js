@@ -248,34 +248,56 @@ function subscribe(uri) {
         events.addEventListener("message", async (ev) => {
             console.log("raw data", JSON.stringify(ev.data));
             console.log("decoded data", JSON.stringify(JSON.parse(ev.data)));
-            const info = JSON.parse(ev.data);
+            const event = JSON.parse(ev.data);
 
-            if (!("type_" in info) || !("id" in info) || !("name" in info) || !("active" in info) || !("time_left" in info)) return;
-            let div = document.getElementById(info.id);
+            if (!("type" in event)) return;
 
-            if (div !== null) {
-                if (info.type_ === "removed") {
-                    emoteRowDiv.removeChild(div);
-                    return;
+            if (event.type === "ConnectionStatus") {
+                if (!("status" in event)) return;
+
+                switch (event.status) {
+                    case "connected":
+                        setConnectedStatus(true);
+                        break;
+                    case "disconnected":
+                        setConnectedStatus(false);
+                        break;
                 }
-            } else {
-                //div = document.createElement("emote-element")
-                div = new EmoteElement(info.id);
-                emoteRowDiv.appendChild(div);
 
-                setEmoteListeners(div);
+            } else if (event.type === "HotkeyChange") {
+                handleHotKeyChange(event);
             }
 
-            div.status = info.active == null ? EmoteStatus.NONE : (info.active ? EmoteStatus.ACTIVE : EmoteStatus.INACTIVE);
+            function handleHotKeyChange(info) {
+                if (!("type_" in info) || !("id" in info) || !("name" in info) || !("active" in info) || !("time_left" in info)) return;
 
-            let status_text = div.getElementsByClassName("status_text")[0];
-            if (info.time_left !== null) {
-                status_text.innerText = info.time_left / 1000000.0 + 'ms left';
-            } else {
-                status_text.innerText = '';
+                let div = document.getElementById(info.id);
+
+                if (div !== null) {
+                    if (info.type_ === "removed") {
+                        emoteRowDiv.removeChild(div);
+                        return;
+                    }
+                } else {
+                    //div = document.createElement("emote-element")
+                    div = new EmoteElement(info.id);
+                    emoteRowDiv.appendChild(div);
+
+                    setEmoteListeners(div);
+                }
+
+                div.status = info.active == null ? EmoteStatus.NONE : (info.active ? EmoteStatus.ACTIVE : EmoteStatus.INACTIVE);
+
+                let status_text = div.getElementsByClassName("status_text")[0];
+                if (info.time_left !== null) {
+                    status_text.innerText = info.time_left / 1000000.0 + 'ms left';
+                } else {
+                    status_text.innerText = '';
+                }
+
+                div.getElementsByClassName("emote_title")[0].innerText = info.name;
             }
 
-            div.getElementsByClassName("emote_title")[0].innerText = info.name;
         });
 
         events.addEventListener("open", () => {
@@ -304,8 +326,10 @@ function setConnectedStatus(status) {
     statusDiv.className = (status) ? "connected" : "reconnecting";
 
     if (status) {
+        console.log("connected")
         enableScroll();
     } else {
+        console.log("reconnecting")
         disableScroll()
     }
 }
