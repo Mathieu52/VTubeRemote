@@ -125,7 +125,8 @@ async fn process_request(client: &mut Client, request: ClientRequest) -> Result<
     match request {
         TriggerHotKey{ id } => {
             client.send(&HotkeyTriggerRequest {hotkey_id: id, item_instance_id: None}).await?;
-        }
+        },
+        ClientRequest::SetHotkeyIcon { .. } => todo!()
     };
 
     Ok(())

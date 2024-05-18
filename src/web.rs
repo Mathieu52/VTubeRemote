@@ -1,7 +1,9 @@
 use std::sync::{Arc, RwLock};
-use rocket::{Build, get, Rocket, routes, State};
+use rocket::{Build, get, post, Rocket, routes, State};
+use rocket::form::FromForm;
 use rocket::fs::{FileServer, relative};
 use rocket::response::stream::EventStream;
+use rocket::serde::json::Json;
 use rocket_slogger::Slogger;
 use slog::Logger;
 use slog_syslog::Facility;
@@ -16,10 +18,10 @@ use crate::communication::client_request::ClientRequest::TriggerHotKey;
 use crate::state::vtube_state::VTubeState;
 use crate::state::vtube_streams::VTubeStreams;
 
-#[get("/<id>")]
-async fn trigger_hot_key(streams: &State<VTubeStreams>, id: &str) {
+#[post("/", data = "<request>")]
+async fn requests(streams: &State<VTubeStreams>, request: Json<ClientRequest>) {
     if let Ok(guard) = streams.requests.read() {
-        if let Err(e) = guard.send(TriggerHotKey {id: id.to_string()}) {
+        if let Err(e) = guard.send(request.0) {
             eprintln!("Error sending request: {:?}", e);
         }
     } else {
@@ -65,7 +67,7 @@ async fn events(state: &State<VTubeState>, streams: &State<VTubeStreams>) -> Eve
 
 pub fn rocket() -> Rocket<Build> {
     let rocket = rocket::build().mount("/", routes![events])
-        .mount("/trigger", routes![trigger_hot_key])
+        .mount("/request", routes![requests])
         .mount("/", FileServer::from(relative!("static")));
 
 

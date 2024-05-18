@@ -85,8 +85,12 @@ export class EmoteElement extends HTMLElement {
         this.statusLight.classList.add(status);
     }
 
-    get #togglePath() {
-        return `trigger/${this.id}`;
+    static #sendRequest(jsonRequest) {
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "request/", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        xhr.send(JSON.stringify(jsonRequest));
     }
 
     toggle() {
@@ -99,8 +103,7 @@ export class EmoteElement extends HTMLElement {
                 break;
         }
 
-        EmoteElement.#XML_HTTP_REQUEST.open("GET", this.#togglePath, true);
-        EmoteElement.#XML_HTTP_REQUEST.send();
+        EmoteElement.#sendRequest({"type": "TriggerHotKey", "id": this.id});
     }
 }
 
