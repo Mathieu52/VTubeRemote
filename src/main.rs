@@ -108,7 +108,11 @@ async fn vtube_main(state: VTubeState, streams: VTubeStreams) -> Result<(), Erro
                     }
                 }
             }
-            Ok(request) = rx_request.recv() => { process_request(&mut client, request, streams.clone()).await?; }
+            Ok(request) = rx_request.recv() => {
+                if let Err(err) = process_request(&mut client, request, streams.clone()).await {
+                    eprintln!("Error occurred when processing request: {}", err);
+                }
+            }
             _ = interval.tick() => {
                 if let Err(err) = regular_process(streams.events.clone(), &mut client, state.hotkey_states.clone()).await {
                     eprintln!("Error occurred in regular process: {}", err);
