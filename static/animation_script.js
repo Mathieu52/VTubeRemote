@@ -17,7 +17,7 @@ if (isTouchPointer()) {
 }
 
 // Creates the callback function for the observer
-export function startAnimatedClick(element, scale, darken) {
+function startAnimatedClick(element, scale, darken) {
     if (!scale && !darken) {
         return;
     }
