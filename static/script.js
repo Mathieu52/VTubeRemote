@@ -88,7 +88,7 @@ function setEmoteListeners(emote) {
     })
 
     // Get all images within elements with class "blur_on_hover"
-    const emotes = document.getElementsByClassName('emote_container');
+    const emotes = emoteRowDiv.children;
 
     emote.icon.addEventListener('mouseenter', () => {
         if (STATE.editing) return;
@@ -171,7 +171,7 @@ function setEmoteListeners(emote) {
             console.log("Drag end");
 
             if (STATE.editing) {
-                const emotes = document.getElementsByClassName('emote_container');
+                const emotes = emoteRowDiv.children;
 
                 let mouseY = getMouseY(event);
 
