@@ -45,7 +45,11 @@ export class EmoteElement extends HTMLElement {
     }
 
     get #imagePath() {
-        return `resources/${this.id}.png`;
+        return `resources/${this.id}`;
+    }
+
+    updateIconImage() {
+        this.#fetchIconImage(this.id);
     }
 
     #fetchIconImage(id) {
@@ -54,7 +58,7 @@ export class EmoteElement extends HTMLElement {
         fetch(iconPath)
             .then((response) => {
                 if (response.ok) {
-                    this.icon.style.backgroundImage = `url("${iconPath}")`;
+                    this.icon.style.backgroundImage = `url("${iconPath}?${new Date().getTime()}")`;
                 } else {
                     this.icon.style.backgroundImage = 'url("resources/no_image_found.png")'
                 }
@@ -85,7 +89,7 @@ export class EmoteElement extends HTMLElement {
         this.statusLight.classList.add(status);
     }
 
-    static #sendRequest(jsonRequest) {
+    static sendRequest(jsonRequest) {
         const xhr = new XMLHttpRequest();
         xhr.open("POST", "request/", true);
         xhr.setRequestHeader("Content-Type", "application/json");
@@ -103,7 +107,7 @@ export class EmoteElement extends HTMLElement {
                 break;
         }
 
-        EmoteElement.#sendRequest({"type": "TriggerHotKey", "id": this.id});
+        EmoteElement.sendRequest({"type": "TriggerHotKey", "id": this.id});
     }
 }
 

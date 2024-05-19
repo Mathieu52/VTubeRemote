@@ -18,6 +18,10 @@ pub enum ServerEvent {
         time_left: Option<u128>
     },
 
+    IconUpdated {
+        id: String
+    },
+
     ConnectionStatus {
         status: String
     },

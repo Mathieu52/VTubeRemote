@@ -291,10 +291,5 @@ list-arrow {
     visibility: visible;
 }
 
-.row-eq-width.editing .emote_group {
-    pointer-events: none;
-}
-
-
 
 /* End CSS emote_group - mobile */

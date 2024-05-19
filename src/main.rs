@@ -22,8 +22,9 @@ use crate::communication::server_event::ServerEvent;
 use crate::hotkey_state::HotkeyState;
 use crate::hotkey_state::HotkeyState::{Active, Inactive};
 use crate::communication::client_request::ClientRequest;
-use crate::communication::client_request::ClientRequest::TriggerHotKey;
+use crate::communication::client_request::ClientRequest::{TriggerHotKey, UpdateIcon};
 use state::vtube_state::VTubeState;
+use crate::communication::server_event::ServerEvent::IconUpdated;
 use crate::state::vtube_streams::VTubeStreams;
 
 mod hotkey_state;
@@ -111,7 +112,7 @@ async fn vtube_main(state: VTubeState, streams: VTubeStreams) -> Result<(), Erro
                     }
                 }
             }
-            Ok(request) = rx_request.recv() => { process_request(&mut client, request).await?; }
+            Ok(request) = rx_request.recv() => { process_request(&mut client, request, streams.clone()).await?; }
             _ = interval.tick() => {
                 if let Err(err) = regular_process(streams.events.clone(), &mut client, state.hotkey_states.clone()).await {
                     eprintln!("Error occurred in regular process: {}", err);
@@ -121,12 +122,15 @@ async fn vtube_main(state: VTubeState, streams: VTubeStreams) -> Result<(), Erro
     }
 }
 
-async fn process_request(client: &mut Client, request: ClientRequest) -> Result<(), Error> {
+async fn process_request(client: &mut Client, request: ClientRequest, streams: VTubeStreams) -> Result<(), Error> {
     match request {
         TriggerHotKey{ id } => {
             client.send(&HotkeyTriggerRequest {hotkey_id: id, item_instance_id: None}).await?;
         },
-        ClientRequest::SetHotkeyIcon { .. } => todo!()
+        UpdateIcon { id } => {
+            _ = streams.events.read().unwrap().send(IconUpdated { id: id.clone() });
+            println!("Update icon request for id: {}", id);
+        }
     };
 
     Ok(())

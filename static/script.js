@@ -5,6 +5,10 @@ let statusDiv = document.getElementById('status');
 let editButton = document.getElementById('edit_button');
 let emoteRowDiv = document.getElementById('emotes-row');
 
+var fileSelector = document.createElement('input');
+fileSelector.setAttribute('image', 'file');
+fileSelector.accept = "image/*";
+
 function isTouchPointer() {
     return matchMedia("(pointer: coarse)").matches;
 }
@@ -107,9 +111,34 @@ function insertEmoteAfter(emote, location) {
     emoteRowDiv.insertBefore(location, emote);
 }
 
+function changeIcon(emote) {
+    let input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+
+    input.onchange = _ => {
+        // you can use this method to get file and perform respective operations
+        let files = Array.from(input.files);
+
+        const formData = new FormData();
+        formData.append("image", files[0]);
+        formData.append("id", emote.id);
+
+        const response = fetch("/upload", {
+            method: "POST",
+            body: formData,
+        });
+    };
+    input.click();
+}
+
 function setEmoteListeners(emote) {
-    emote.icon.addEventListener("click", () => {
-        if (STATE.connected) {
+    emote.icon.addEventListener("click", async () => {
+        if (!STATE.connected) return;
+
+        if (STATE.editing) {
+            changeIcon(emote);
+        } else {
             emote.toggle();
         }
     })
@@ -252,7 +281,13 @@ function subscribe(uri) {
 
             if (!("type" in event)) return;
 
-            if (event.type === "ConnectionStatus") {
+            if (event.type === "IconUpdated") {
+                if (!("id" in event)) return;
+
+                let emote = document.getElementById(event.id);
+                emote.updateIconImage();
+
+            } else if (event.type === "ConnectionStatus") {
                 if (!("status" in event)) return;
 
                 switch (event.status) {

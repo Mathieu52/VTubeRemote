@@ -16,3 +16,6 @@ tokio = "1.37.0"
 slog = "2.7.0"
 slog-syslog = "0.13.0"
 rocket-slogger = "0.2.0"
+
+rocket-multipart-form-data = "0.10.7"
+mime = "0.3.17"
