@@ -23,7 +23,7 @@ emote-element {
 
     border-bottom: 4px solid rgba(0, 0, 0, 0.1); /* Add a bottom border for separation */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add a shadow effect */
-    background-color: white;
+    background-color: #ffffff;
 }
 
 emote-element.dragged {
@@ -96,11 +96,17 @@ emote-element.dragged {
 .status_light.active {
     visibility: visible;
     background: #42FF00;
+    border-color: #2D8A0B;
+
+    box-shadow: 0 0 10px 10px #42FF006B;
 }
 
 .status_light.inactive {
     visibility: visible;
     background: #FF2F2F;
+    border-color: #A62828;
+
+    box-shadow: 0 0 10px 10px #FF2F2F6B;
 }
 
 .status_light.no-status {
