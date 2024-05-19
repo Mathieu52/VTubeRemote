@@ -22,7 +22,6 @@ export const EmoteStatus = {
 };
 
 export class EmoteElement extends HTMLElement {
-    static #XML_HTTP_REQUEST = new XMLHttpRequest();
     constructor(id) {
         super();
 
@@ -41,18 +40,14 @@ export class EmoteElement extends HTMLElement {
 
     set id(id) {
         this.setAttribute('id', id);
-        this.#fetchIconImage(id);
+        this.fetchIconImage(id);
     }
 
     get #imagePath() {
         return `resources/${this.id}`;
     }
 
-    updateIconImage() {
-        this.#fetchIconImage(this.id);
-    }
-
-    #fetchIconImage(id) {
+    fetchIconImage() {
         let iconPath = this.#imagePath;
 
         fetch(iconPath)

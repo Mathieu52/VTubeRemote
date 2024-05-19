@@ -5,10 +5,6 @@ let statusDiv = document.getElementById('status');
 let editButton = document.getElementById('edit_button');
 let emoteRowDiv = document.getElementById('emotes-row');
 
-var fileSelector = document.createElement('input');
-fileSelector.setAttribute('image', 'file');
-fileSelector.accept = "image/*";
-
 function isTouchPointer() {
     return matchMedia("(pointer: coarse)").matches;
 }
@@ -17,38 +13,25 @@ document.addEventListener('DOMContentLoaded', () => {
     // Fetch the template HTML file
     fetch('emote_template.html')
         .then(response => response.text())
-        .then(html => {
-            /*
-            // Create a temporary element to hold the template content
-            const temp = document.createElement('div');
-            temp.innerHTML = html.trim();
-
-            // Get the template content
-            const templateContent = temp.firstElementChild;
-
-            // Clone the template content
-            const clone = document.importNode(templateContent, true);
-            document.body.appendChild(clone);
-
-             */
+        .then(() => {
             init();
         });
 });
 
 function getMouseX(e) {
     if (e.type === 'touchstart' || e.type === 'touchmove' || e.type === 'touchend' || e.type === 'touchcancel') {
-        var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
+        const touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
         return touch.pageX;
-    } else if (e.type === 'mousedown' || e.type === 'mouseup' || e.type === 'mousemove' || e.type === 'mouseover' || e.type === 'mouseout' || e.type == 'mouseenter' || e.type == 'mouseleave') {
+    } else if (e.type === 'mousedown' || e.type === 'mouseup' || e.type === 'mousemove' || e.type === 'mouseover' || e.type === 'mouseout' || e.type === 'mouseenter' || e.type === 'mouseleave') {
         return e.clientX;
     }
 }
 
 function getMouseY(e) {
     if (e.type === 'touchstart' || e.type === 'touchmove' || e.type === 'touchend' || e.type === 'touchcancel') {
-        var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
+        const touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
         return touch.pageY;
-    } else if (e.type === 'mousedown' || e.type === 'mouseup' || e.type === 'mousemove' || e.type === 'mouseover' || e.type === 'mouseout' || e.type == 'mouseenter' || e.type == 'mouseleave') {
+    } else if (e.type === 'mousedown' || e.type === 'mouseup' || e.type === 'mousemove' || e.type === 'mouseover' || e.type === 'mouseout' || e.type === 'mouseenter' || e.type === 'mouseleave') {
         return e.clientY;
     }
 }
@@ -58,48 +41,9 @@ function moveElementOnMouse(mouseEvent, element) {
     element.style.top = `${getMouseY(mouseEvent) - element.getBoundingClientRect().height / 2.0}px`;
 }
 
-function createTemplate() {
-    let temp = document.getElementsByTagName("template")[0];
-    let item = temp.content.querySelector("div");
-
-    let node = document.importNode(item, true);
-
-    emoteRowDiv.appendChild(node);
-
-    return node;
-}
-
 let STATE = {
     connected: false,
     editing: false,
-}
-
-function set_status_light_state(emote, active) {
-    let status_light = emote.getElementsByClassName("status_light")[0];
-
-    if (active == null) {
-        status_light.classList.replace("active", "no_state");
-        status_light.classList.replace("inactive", "no_state");
-    } else {
-        if (active) {
-            status_light.classList.replace("no_state", 'active');
-            status_light.classList.replace("inactive", 'active');
-        } else {
-            status_light.classList.replace("no_state", 'inactive');
-            status_light.classList.replace("active", 'inactive');
-        }
-    }
-}
-
-function get_emote_state(emote) {
-    let status_light = emote.getElementsByClassName("status_light")[0];
-    if (status_light.classList.contains("active")) {
-        return true;
-    } else if (status_light.classList.contains("inactive")) {
-        return false;
-    } else {
-        return null;
-    }
 }
 
 function insertEmoteBefore(emote, location) {
@@ -124,10 +68,10 @@ function changeIcon(emote) {
         formData.append("image", files[0]);
         formData.append("id", emote.id);
 
-        const response = fetch("/upload", {
+        fetch("/upload", {
             method: "POST",
             body: formData,
-        });
+        }).then(() => console.debug("Upload successful!"));
     };
     input.click();
 }
@@ -166,10 +110,6 @@ function setEmoteListeners(emote) {
         }
     });
 
-    let listArrow = emote.getElementsByTagName("list-arrow")[0];
-    let upArrow = emote.getElementsByClassName("move_arrow_up")[0];
-    let downArrow = emote.getElementsByClassName("move_arrow_down")[0];
-
     let dragged = false;
 
     // Not enabled on the phone
@@ -194,12 +134,12 @@ function setEmoteListeners(emote) {
     });
     emote.addEventListener("mouseleave", (event) => {
         if (event.target === emote) {
-            cancelDrag(event);
+            cancelDrag();
         }
     });
     emote.addEventListener("mouseout", (event) => {
         if (event.target === emote) {
-            cancelDrag(event);
+            cancelDrag();
         }
     });
 
@@ -219,7 +159,7 @@ function setEmoteListeners(emote) {
         moveElementOnMouse(event, emote);
     }
 
-    function cancelDrag(event) {
+    function cancelDrag() {
         dragged = false;
         emote.style.left = `0`;
         emote.style.top = '0';
@@ -285,7 +225,7 @@ function subscribe(uri) {
                 if (!("id" in event)) return;
 
                 let emote = document.getElementById(event.id);
-                emote.updateIconImage();
+                emote.fetchIconImage();
 
             } else if (event.type === "ConnectionStatus") {
                 if (!("status" in event)) return;

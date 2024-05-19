@@ -1,8 +1,3 @@
-#![feature(iter_collect_into)]
-#![feature(async_closure)]
-#![feature(async_fn_traits)]
-#![feature(unboxed_closures)]
-#![feature(format_args_nl)]
 extern crate core;
 
 use std::sync::{Arc, RwLock};
@@ -16,15 +11,16 @@ use vtubestudio::{Client, ClientEvent, ClientEventStream, Error};
 use vtubestudio::data::{EventSubscriptionRequest, ExpressionStateRequest, Hotkey, HotkeysInCurrentModelRequest, HotkeyTriggerRequest, ItemListRequest, TestEventConfig};
 use vtubestudio::data::HotkeyAction::{ToggleExpression, ToggleItemScene};
 
+use state::vtube_state::VTubeState;
+
 use crate::change::categorize_changes;
-use crate::connection_state::ConnectionState::{Connected, Disconnected};
-use crate::communication::server_event::ServerEvent;
-use crate::hotkey_state::HotkeyState;
-use crate::hotkey_state::HotkeyState::{Active, Inactive};
 use crate::communication::client_request::ClientRequest;
 use crate::communication::client_request::ClientRequest::{TriggerHotKey, UpdateIcon};
-use state::vtube_state::VTubeState;
+use crate::communication::server_event::ServerEvent;
 use crate::communication::server_event::ServerEvent::IconUpdated;
+use crate::connection_state::ConnectionState::{Connected, Disconnected};
+use crate::hotkey_state::HotkeyState;
+use crate::hotkey_state::HotkeyState::{Active, Inactive};
 use crate::state::vtube_streams::VTubeStreams;
 
 mod hotkey_state;

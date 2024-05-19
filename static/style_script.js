@@ -12,10 +12,10 @@ function inViewport(element) {
     return new DOMRect(elementVisibleX, elementVisibleY, Math.min(windowRect.right, elementRect.right) - elementVisibleX, Math.min(windowRect.bottom, elementRect.bottom) - elementVisibleY);
 }
 
-var checkScrollSpeed = (function(settings){
+const checkScrollSpeed = (function (settings) {
     settings = settings || {};
 
-    var lastPos, newPos, timer, delta,
+    let lastPos, newPos, timer, delta,
         delay = settings.delay || 150; // in "ms" (higher means lower fidelity )
 
     function clear() {
@@ -25,10 +25,10 @@ var checkScrollSpeed = (function(settings){
 
     clear();
 
-    return function(){
+    return function () {
         newPos = window.scrollY;
-        if ( lastPos != null ){ // && newPos < maxScroll
-            delta = (newPos -  lastPos);
+        if (lastPos != null) { // && newPos < maxScroll
+            delta = (newPos - lastPos);
         }
         lastPos = newPos;
         clearTimeout(timer);
@@ -39,7 +39,7 @@ var checkScrollSpeed = (function(settings){
 })();
 
 if (isTouchPointer()) {
-    let smoooth_scroll_speed = 0;
+    let smooth_scroll_speed = 0;
     // listen to "scroll" event
     window.onscroll = function () {
 
@@ -53,8 +53,8 @@ if (isTouchPointer()) {
 
         const scrollSpeed = checkScrollSpeed();
 
-        smoooth_scroll_speed += 0.1 * (scrollSpeed - smoooth_scroll_speed);
-        const scaleEffect = Math.abs(scrollSpeed) > 50 ? Math.abs(smoooth_scroll_speed / 3000.0) : 0;
+        smooth_scroll_speed += 0.1 * (scrollSpeed - smooth_scroll_speed);
+        const scaleEffect = Math.abs(scrollSpeed) > 50 ? Math.abs(smooth_scroll_speed / 3000.0) : 0;
 
         const baseScale = 1.0 + Math.min(scaleEffect, 0.1);
 

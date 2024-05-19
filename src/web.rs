@@ -1,25 +1,17 @@
-use std::fmt::format;
 use std::fs;
 use std::path::Path;
-use std::sync::{Arc, RwLock};
+
 use rocket::{Build, Data, get, post, Rocket, routes, State};
-use rocket::form::FromForm;
 use rocket::fs::{FileServer, relative};
 use rocket::http::ContentType;
 use rocket::response::stream::EventStream;
 use rocket::serde::json::Json;
-use rocket_multipart_form_data::{multer, MultipartFormData, MultipartFormDataError, MultipartFormDataField, MultipartFormDataOptions};
-use rocket_slogger::Slogger;
-use slog::Logger;
-use slog_syslog::Facility;
-use tokio::sync::broadcast::Sender;
-use vtubestudio::data::Hotkey;
-use crate::change::Change;
+use rocket_multipart_form_data::{MultipartFormData, MultipartFormDataField, MultipartFormDataOptions};
+
 use crate::change::Change::Added;
-use crate::communication::server_event::ServerEvent;
-use crate::hotkey_state::HotkeyState;
 use crate::communication::client_request::ClientRequest;
-use crate::communication::client_request::ClientRequest::{TriggerHotKey, UpdateIcon};
+use crate::communication::client_request::ClientRequest::UpdateIcon;
+use crate::communication::server_event::ServerEvent;
 use crate::state::vtube_state::VTubeState;
 use crate::state::vtube_streams::VTubeStreams;
 
